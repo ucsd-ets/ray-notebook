@@ -63,5 +63,8 @@ COPY start-singleuser.sh /usr/local/bin
 RUN chmod 777 /usr/local/bin/start-notebook.sh /usr/local/bin/start.sh /usr/local/bin/start-singleuser.sh
 RUN mkdir -m 750 /usr/local/bin/before-notebook.d
 
+ENV STOP_CLUSTER_SCRIPT_PATH=/home/agt/stop-cluster.sh
+ENV START_CLUSTER_SCRIPT_PATH=/home/agt/start-cluster.sh
+
 USER 1000
 
