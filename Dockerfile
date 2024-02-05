@@ -73,7 +73,7 @@ ENV SHELL=/bin/bash
 RUN mkdir -p /opt/ray-support
 COPY jupyter_config.py start-workers.sh start-cluster.sh stop-cluster.sh /opt/ray-support
 RUN chmod 0755 /opt/ray-support/*.sh
-RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/jupyter/jupyter_config.py
+RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/etc/jupyter/jupyter_config.py
 
 USER 1000
 
