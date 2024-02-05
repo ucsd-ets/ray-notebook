@@ -26,6 +26,7 @@ RUN apt-get update -y && \
     screen \
     gnupg \
     htop \
+    netcat \
     wget \
     openssh-client \
     openssh-server \
@@ -63,13 +64,16 @@ COPY start-singleuser.sh /usr/local/bin
 RUN chmod 777 /usr/local/bin/start-notebook.sh /usr/local/bin/start.sh /usr/local/bin/start-singleuser.sh
 RUN mkdir -p -m 750 /usr/local/bin/before-notebook.d
 
+#############################
+# Finally, our local support scripts 
 ENV STOP_CLUSTER_SCRIPT_PATH=/opt/ray-support/stop-cluster.sh
 ENV START_CLUSTER_SCRIPT_PATH=/opt/ray-support/start-cluster.sh
 ENV SHELL=/bin/bash
 
 RUN mkdir -p /opt/ray-support
-COPY start-cluster.sh stop-cluster.sh /opt/ray-support
+COPY jupyter_config.py start-workers.sh start-cluster.sh stop-cluster.sh /opt/ray-support
 RUN chmod 0755 /opt/ray-support/*.sh
+RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/jupyter/jupyter_config.py
 
 USER 1000
 
