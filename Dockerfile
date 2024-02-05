@@ -61,10 +61,15 @@ COPY start-notebook.sh /usr/local/bin
 COPY start.sh /usr/local/bin
 COPY start-singleuser.sh /usr/local/bin
 RUN chmod 777 /usr/local/bin/start-notebook.sh /usr/local/bin/start.sh /usr/local/bin/start-singleuser.sh
-RUN mkdir -m 750 /usr/local/bin/before-notebook.d
+RUN mkdir -p -m 750 /usr/local/bin/before-notebook.d
 
-ENV STOP_CLUSTER_SCRIPT_PATH=/home/agt/stop-cluster.sh
-ENV START_CLUSTER_SCRIPT_PATH=/home/agt/start-cluster.sh
+ENV STOP_CLUSTER_SCRIPT_PATH=/opt/ray-support/stop-cluster.sh
+ENV START_CLUSTER_SCRIPT_PATH=/opt/ray-support/start-cluster.sh
+ENV SHELL=/bin/bash
+
+RUN mkdir -p /opt/ray-support
+COPY start-cluster.sh stop-cluster.sh /opt/ray-support
+RUN chmod 0755 /opt/ray-support/*.sh
 
 USER 1000
 
