@@ -76,7 +76,7 @@ RUN chmod 0755 /opt/ray-support/*.sh
 RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/etc/jupyter/jupyter_config.py
 
 # copy our test data here
-RUN cp "public/Assignment_2_testdata.csv" /home/ray/Assignment_2_testdata.csv 
+RUN cp "dsc204a/Assignment_2_testdata.csv" /home/ray/Assignment_2_testdata.csv 
 
 # install bazel
 RUN apt install apt-transport-https curl gnupg -y && \
