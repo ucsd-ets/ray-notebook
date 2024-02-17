@@ -75,5 +75,8 @@ COPY jupyter_config.py start-workers.sh start-cluster.sh stop-cluster.sh /opt/ra
 RUN chmod 0755 /opt/ray-support/*.sh
 RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/etc/jupyter/jupyter_config.py
 
+# copy our test data here
+RUN cp "/home/${USER}/public/Assignment_2_testdata.csv" /home/ray/Assignment_2_testdata.csv 
+
 USER 1000
 
