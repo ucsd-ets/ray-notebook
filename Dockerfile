@@ -75,9 +75,6 @@ COPY jupyter_config.py start-workers.sh start-cluster.sh stop-cluster.sh /opt/ra
 RUN chmod 0755 /opt/ray-support/*.sh
 RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/etc/jupyter/jupyter_config.py
 
-# copy our test data here
-RUN cp "dsc204a/Assignment_2_testdata.csv" /home/ray/Assignment_2_testdata.csv 
-
 # install bazel
 RUN apt install apt-transport-https curl gnupg -y && \
     curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg && \
