@@ -76,7 +76,14 @@ RUN chmod 0755 /opt/ray-support/*.sh
 RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/etc/jupyter/jupyter_config.py
 
 # copy our test data here
-RUN cp "/home/${USER}/public/Assignment_2_testdata.csv" /home/ray/Assignment_2_testdata.csv 
+RUN cp "public/Assignment_2_testdata.csv" /home/ray/Assignment_2_testdata.csv 
+
+# install bazel
+RUN apt install apt-transport-https curl gnupg -y && \
+    curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg && \
+    mv bazel-archive-keyring.gpg /usr/share/keyrings && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
+RUN apt update && apt install bazel-3.20.0
 
 USER 1000
 
