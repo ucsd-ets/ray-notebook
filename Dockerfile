@@ -81,6 +81,11 @@ RUN apt install apt-transport-https curl gnupg -y && \
     mv bazel-archive-keyring.gpg /usr/share/keyrings && \
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
 RUN apt update && apt install bazel-3.2.0
+# downgrade protobuf and numpy for transformers and pygloo
+RUN pip3 install protobuf==3.20.0 numpy==1.20.0
+# install pygloo
+RUN git clone https://github.com/ray-project/pygloo.git
+RUN cd pygloo && python setup.py install && cd ..
 
 USER 1000
 
