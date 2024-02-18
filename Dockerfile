@@ -85,6 +85,7 @@ RUN apt update && apt install bazel-3.2.0
 RUN pip3 install protobuf==3.20.0 numpy==1.20.0
 # install pygloo
 RUN git clone https://github.com/ray-project/pygloo.git
+RUN ln -s "/usr/bin/bazel-3.2.0" "/usr/bin/bazel"
 RUN alias bazel="bazel-3.2.0" && cd pygloo && python setup.py install && cd ..
 
 USER 1000
