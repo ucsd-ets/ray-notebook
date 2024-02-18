@@ -82,6 +82,7 @@ RUN apt install apt-transport-https curl gnupg -y && \
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
 RUN apt update && apt install bazel-3.2.0
 RUN alias bazel="bazel-3.2.0" 
+RUN ln -s "/home/ray/.bazel/bin/bazel-3.2.0" /home/ray/.bazel/bin/bazel
 # downgrade protobuf and numpy for transformers and pygloo
 RUN pip3 install protobuf==3.20.0 numpy==1.20.0
 # install pygloo
