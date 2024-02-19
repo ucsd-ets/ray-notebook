@@ -7,15 +7,14 @@ if [ -x "$USERSCRIPT" ]; then
     exec "$USERSCRIPT" "$@"
 fi
 
-NUM_WORKERS=1
+NUM_WORKERS=2
 
-WORKER_CPU_REQUEST=8
-WORKER_CPU_LIMIT=8
-WORKER_MEM_REQUEST=16384M
-WORKER_MEM_LIMIT=16384M
+WORKER_CPU_REQUEST=3 #set
+WORKER_CPU_LIMIT=3 #upper bound
+WORKER_MEM_REQUEST=8192M
+WORKER_MEM_LIMIT=8192M
 WORKER_GPU_COUNT=0
 
-# Jupyter pod's stop hook _should_ delete the deployment, but check again just in case
 if kubectl get deployment deployment-ray-worker 2>/dev/null > /dev/null; then
 	kubectl delete -f deployment deployment-ray-worker
 fi
@@ -47,15 +46,19 @@ spec:
       - name: dshm
         emptyDir:
           medium: Memory
+      - name: home
+        persistentVolumeClaim:
+          claimName: home
       securityContext:
         runAsUser: $(id -u)
+        
       containers:
       - name: ray-worker
         image: "${JUPYTER_IMAGE_SPEC}"
         imagePullPolicy: Always
         command: ["/bin/bash", "-c", "--"]
         args:
-          - "ray start --num-cpus=${WORKER_CPU_REQUEST} --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block"
+          - "ray start --num-cpus=${WORKER_CPU_REQUEST} --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block --object-store-memory 4294967296 --memory 7516192768"
         securityContext:
           allowPrivilegeEscalation: false
         # This volume allocates shared memory for Ray to use for its plasma
@@ -64,6 +67,10 @@ spec:
         volumeMounts:
           - mountPath: /dev/shm
             name: dshm
+          - mountPath: "/home/${USER}/private"
+            name: home
+          
+            
         env:
           # This is used in the ray start command so that Ray can spawn the
           # correct number of processes. Omitting this may lead to degraded
