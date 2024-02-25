@@ -48,7 +48,7 @@ read -d '' DEPLOYMENT <<EOM
                 "containers": [
                     {
                         "args": [
-                            "ray start --num-cpus=1 --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block"
+                            "ray start --num-cpus=${WORKER_CPU_REQUEST} --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block --object-store-memory 4294967296 --memory 7516192768"
                         ],
                         "command": [
                             "/bin/bash",
