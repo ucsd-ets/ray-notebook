@@ -88,6 +88,10 @@ read -d '' DEPLOYMENT <<EOM
                             {
                                 "mountPath": "/dev/shm",
                                 "name": "dshm"
+                            },
+                            {
+                                "mountPath": "/datasets",
+                                "name": "datasets"
                             }
                         ]
                     }
@@ -99,6 +103,12 @@ read -d '' DEPLOYMENT <<EOM
                             "medium": "Memory"
                         },
                         "name": "dshm"
+                    },
+                    {
+                        "persistentVolumeClaim": {
+                            "claimName": "dsmlp-datasets"
+                        },
+                        "name": "datasets"
                     }
                 ]
             }
