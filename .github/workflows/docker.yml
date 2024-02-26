@@ -1,6 +1,7 @@
 name: Build notebook
 on:
   push:
+  workflow_dispatch:
  
 env:
   REGISTRY: ghcr.io
