@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Modify this script by copying it to your home directory
+# *** be sure to remove the "exec" line below from your copy! ***
+USERSCRIPT=$HOME/start-workers.sh
+if [ -x "$USERSCRIPT" ]; then
+    exec "$USERSCRIPT" "$@"
+fi 
+
 NUM_WORKERS=2
 
 WORKER_CPU_REQUEST=3
