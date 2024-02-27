@@ -66,7 +66,7 @@ read -d '' DEPLOYMENT <<EOM
                                 }
                             }
                         ],
-                        "image": "IMAGE",
+                        "image": ${IMAGE},
                         "imagePullPolicy": "Always",
                         "name": "ray-worker",
                         "resources": {
