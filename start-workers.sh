@@ -66,7 +66,7 @@ read -d '' DEPLOYMENT <<EOM
                                 }
                             }
                         ],
-                        "image": "ghcr.io/ucsd-ets/ray-notebook:main",
+                        "image": "IMAGE",
                         "imagePullPolicy": "Always",
                         "name": "ray-worker",
                         "resources": {
