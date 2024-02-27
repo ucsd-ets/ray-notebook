@@ -9,6 +9,7 @@ fi
 
 exec 2>>$HOME/ray-head.log 1>&2
 
+CPU_GUARANTEE=${CPU_GUARANTEE:-$(( $KUBERNETES_LIMIT_CPU / 2 ))}
 # Datahub exposes limits/requests as floating point, Ray wants int
 MY_CPU_REQUEST=$(printf "%.0f" "$CPU_GUARANTEE") 
 
