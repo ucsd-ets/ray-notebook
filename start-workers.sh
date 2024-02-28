@@ -5,18 +5,18 @@
 USERSCRIPT=$HOME/start-workers.sh
 if [ -x "$USERSCRIPT" ]; then
     exec "$USERSCRIPT" "$@"
-fi 
+fi
 
 NUM_WORKERS=2
 
-WORKER_CPU_REQUEST=2
-WORKER_CPU_LIMIT=2
+WORKER_CPU_REQUEST=4
+WORKER_CPU_LIMIT=4
 WORKER_MEM_REQUEST=8192M
 WORKER_MEM_LIMIT=8192M
 WORKER_GPU_COUNT=0
 
 IMAGE=${JUPYTER_IMAGE_SPEC:-${DOCKER_IMAGE}}
-
+echo "STARTING WORKERS WITH WORKER_CPU_REQUEST=${WORKER_CPU_REQUEST}"
 if kubectl get deployment deployment-ray-worker 2>/dev/null > /dev/null; then
 	kubectl delete deployment deployment-ray-worker
 fi
@@ -87,7 +87,8 @@ read -d '' DEPLOYMENT <<EOM
                             }
                         },
                         "securityContext": {
-                            "allowPrivilegeEscalation": false
+                            "allowPrivilegeEscalation": false,
+                            "runAsUser": ${UID}
                         },
                         "terminationMessagePath": "/dev/termination-log",
                         "terminationMessagePolicy": "File",
@@ -103,7 +104,17 @@ read -d '' DEPLOYMENT <<EOM
                             {
                                 "mountPath": "/home/${USER}/private",
                                 "name": "home"
-                            }
+                            },
+                             {
+                                "mountPath": "/home/${USER}",
+                                "name": "course-workspace",
+                                "subPath": "home/${USER}"
+                             },
+                              {
+                                "mountPath": "/home/${USER}/public",
+                                "name": "course-workspace",
+                                "subPath": "public"
+                              }
                         ]
                     }
                 ],
@@ -136,15 +147,8 @@ EOM
 
 VOL=$( kubectl get pod ${HOSTNAME} -o json | jq '.spec.volumes[] | select(.name=="course-workspace")' )
 
-read -d '' VOLMNT <<"EOM"
-{
-	"mountPath": "/public",
-	"name": "course-workspace",
-	"subPath": "public"
-}
-EOM
-
 DEPLOYMENT=$( echo "$DEPLOYMENT" | jq --argjson v "$VOL" '.spec.template.spec.volumes += [ $v ]')
-DEPLOYMENT=$( echo "$DEPLOYMENT" | jq --argjson v "$VOLMNT" '.spec.template.spec.containers[0].volumeMounts += [ $v ]')
 
+
+# echo "$DEPLOYMENT"
 echo "$DEPLOYMENT" | kubectl create -f -
