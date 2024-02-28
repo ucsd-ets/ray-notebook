@@ -46,7 +46,11 @@ EOM
 fi
 
 # Now fire up workers
-/opt/ray-support/start-workers.sh "$@"
+if [ -x "$HOME/start-workers.sh" ]; then
+    exec "$HOME/start-workers.sh" "$@"
+else
+    exec /opt/ray-support/start-workers.sh "$@"
+fi
 
 # Execution shouldn't reach here unless both start-workers scripts are missing, if so assume that's intentional
 exit 0

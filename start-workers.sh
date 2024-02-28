@@ -9,8 +9,8 @@ fi
 
 NUM_WORKERS=2
 
-WORKER_CPU_REQUEST=3
-WORKER_CPU_LIMIT=3
+WORKER_CPU_REQUEST=2
+WORKER_CPU_LIMIT=2
 WORKER_MEM_REQUEST=8192M
 WORKER_MEM_LIMIT=8192M
 WORKER_GPU_COUNT=0
@@ -55,7 +55,7 @@ read -d '' DEPLOYMENT <<EOM
                 "containers": [
                     {
                         "args": [
-                            "ray start --num-cpus=${WORKER_CPU_REQUEST} --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block --object-store-memory 4294967296 --memory 7516192768"
+                            "ray start --num-cpus=${WORKER_CPU_REQUEST} --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block --object-store-memory=4294967296 --memory=7516192768"
                         ],
                         "command": [
                             "/bin/bash",
@@ -73,7 +73,7 @@ read -d '' DEPLOYMENT <<EOM
                                 }
                             }
                         ],
-                        "image": ${IMAGE},
+                        "image": "${IMAGE}",
                         "imagePullPolicy": "Always",
                         "name": "ray-worker",
                         "resources": {
@@ -99,6 +99,10 @@ read -d '' DEPLOYMENT <<EOM
                             {
                                 "mountPath": "/datasets",
                                 "name": "datasets"
+                            },
+                            {
+                                "mountPath": "/home/${USER}/private",
+                                "name": "home"
                             }
                         ]
                     }
@@ -116,6 +120,12 @@ read -d '' DEPLOYMENT <<EOM
                             "claimName": "dsmlp-datasets"
                         },
                         "name": "datasets"
+                    },
+                    {
+                        "persistentVolumeClaim": {
+                            "claimName": "home"
+                        },
+                        "name": "home"
                     }
                 ]
             }
