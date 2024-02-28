@@ -1,5 +1,5 @@
 
-FROM rayproject/ray-ml:2.9.3
+FROM rayproject/ray-ml:2.9.1
 
 USER root
 
