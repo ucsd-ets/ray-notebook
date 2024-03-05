@@ -9,10 +9,14 @@ fi
 
 exec 2>>$HOME/ray-head.log 1>&2
 
+CPU_GUARANTEE=${CPU_GUARANTEE:-$(( $KUBERNETES_LIMIT_CPU))}
+MEM_GUARANTEE=${MEM_GUARANTEE:-$(( $KUBERNETES_LIMIT_MEM ))}
+OBJECT_STORE_MEM=$(( $MEM_GUARANTEE / 2))
+
 # Datahub exposes limits/requests as floating point, Ray wants int
 MY_CPU_REQUEST=$(printf "%.0f" "$CPU_GUARANTEE") 
 
-ray start --head --port=6380 --num-cpus=$MY_CPU_REQUEST --dashboard-host=0.0.0.0 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365  --disable-usage-stats --object-store-memory 4294967296
+ray start --head --port=6380 --num-cpus=$MY_CPU_REQUEST --dashboard-host=0.0.0.0 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365  --disable-usage-stats --object-store-memory $OBJECT_STORE_MEM --memory $MEM_GUARANTEE --system-config='{"object_spilling_config":"{\"type\":\"filesystem\",\"params\":{\"directory_path\":\"/tmp/spill\"}}"}'
 
 if !  kubectl get svc service-ray-cluster 2>/dev/null > /dev/null; then
     kubectl create -f - <<EOM
@@ -45,7 +49,11 @@ EOM
 fi
 
 # Now fire up workers
-/opt/ray-support/start-workers.sh "$@"
+if [ -x "$HOME/start-workers.sh" ]; then
+    exec "$HOME/start-workers.sh" "$@"
+else
+    exec /opt/ray-support/start-workers.sh "$@"
+fi
 
 # Execution shouldn't reach here unless both start-workers scripts are missing, if so assume that's intentional
 exit 0

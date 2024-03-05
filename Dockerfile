@@ -1,5 +1,5 @@
 
-FROM rayproject/ray-ml:latest-gpu
+FROM rayproject/ray-ml:2.9.3
 
 USER root
 
@@ -75,18 +75,8 @@ COPY jupyter_config.py start-workers.sh start-cluster.sh stop-cluster.sh /opt/ra
 RUN chmod 0755 /opt/ray-support/*.sh
 RUN mkdir -p /usr/local/etc/jupyter && cat /opt/ray-support/jupyter_config.py >> /usr/local/etc/jupyter/jupyter_config.py
 
-# install bazel
-RUN apt install apt-transport-https curl gnupg -y && \
-    curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg && \
-    mv bazel-archive-keyring.gpg /usr/share/keyrings && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
-RUN apt update && apt install bazel-3.2.0
-# downgrade protobuf and numpy for transformers and pygloo
-RUN pip3 install protobuf==3.20.0 numpy==1.20.0 pandas==1.4.0
-# install pygloo
-RUN git clone https://github.com/ray-project/pygloo.git
-RUN ln -s "/usr/bin/bazel-3.2.0" "/usr/bin/bazel"
-RUN alias bazel="bazel-3.2.0" && cd pygloo && python setup.py install && cd ..
+# add gensim: experimental
+RUN pip3 install gensim
 
 USER 1000
 
