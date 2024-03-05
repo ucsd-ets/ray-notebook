@@ -9,10 +9,10 @@ fi
 
 NUM_WORKERS=2
 
-WORKER_CPU_REQUEST=4
-WORKER_CPU_LIMIT=4
-WORKER_MEM_REQUEST=8192M
-WORKER_MEM_LIMIT=8192M
+WORKER_CPU_REQUEST=8
+WORKER_CPU_LIMIT=8
+WORKER_MEM_REQUEST=16384M
+WORKER_MEM_LIMIT=16384M
 WORKER_GPU_COUNT=0
 
 IMAGE=${JUPYTER_IMAGE_SPEC:-${DOCKER_IMAGE}}
@@ -55,7 +55,7 @@ read -d '' DEPLOYMENT <<EOM
                 "containers": [
                     {
                         "args": [
-                            "ray start --num-cpus=${WORKER_CPU_REQUEST} --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block --object-store-memory=4294967296 --memory=7516192768"
+                            "ray start --num-cpus=${WORKER_CPU_REQUEST} --address=service-ray-cluster:6380 --object-manager-port=8076 --node-manager-port=8077 --dashboard-agent-grpc-port=8078 --dashboard-agent-listen-port=52365 --block --object-store-memory=7516192768 --memory=17179869184"
                         ],
                         "command": [
                             "/bin/bash",
